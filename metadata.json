@@ -1,0 +1,19 @@
+{
+  "icon": "boringproxy_logo.svg",
+  "vm": {
+    "composefile": "docker-compose.yaml",
+    "exposes": {
+      "socket": "extension-boringproxy-docker-extension.sock"
+    }
+  },
+  "ui": {
+    "dashboard-tab": {
+      "title": "boringproxy",
+      "src": "index.html",
+      "root": "ui",
+      "backend": {
+        "socket": "extension-boringproxy-docker-extension.sock"
+      }
+    }
+  }
+}
