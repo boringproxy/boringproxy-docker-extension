@@ -27,10 +27,11 @@ LABEL org.opencontainers.image.title="boringproxy" \
     org.opencontainers.image.description="boringproxy client extension" \
     org.opencontainers.image.vendor="IndieBits.io" \
     com.docker.desktop.extension.api.version="0.3.0" \
+    com.docker.desktop.extension.icon="https://raw.githubusercontent.com/boringproxy/boringproxy-docker-extension/main/boringproxy_logo.svg" \
     com.docker.extension.screenshots="" \
     com.docker.extension.detailed-description="" \
-    com.docker.extension.publisher-url="" \
-    com.docker.extension.additional-urls="" \
+    com.docker.extension.publisher-url="https://forum.indiebits.io" \
+    com.docker.extension.additional-urls='[{"title":"Support","url":"https://forum.indiebits.io/"}]' \
     com.docker.extension.changelog=""
 
 COPY --from=builder /backend/bin/service /
