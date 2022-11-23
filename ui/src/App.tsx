@@ -12,41 +12,58 @@ function useDockerDesktopClient() {
 }
 
 export function App() {
-  const [response, setResponse] = React.useState<string>();
+  const [server, setServer] = React.useState<string>("");
+  const [token, setToken] = React.useState<string>("");
   const ddClient = useDockerDesktopClient();
 
-  const fetchAndDisplayResponse = async () => {
-    const result = await ddClient.extension.vm?.service?.get('/hello');
-    setResponse(JSON.stringify(result));
+  const run = async () => {
+    ddClient.extension.vm.cli.exec("/boringproxy", [
+        'client',
+        '-server', server,
+        '-token', token,
+      ], {
+      stream: {
+        onOutput(data) {
+          if (data.stdout) {
+            console.error(data.stdout);
+          } else {
+            console.log(data.stderr);
+          }
+        },
+        onError(error) {
+          console.error(error);
+        },
+        onClose(exitCode) {
+          console.log("onClose with exit code " + exitCode);
+        },
+      },
+    });
   };
 
   return (
     <>
-      <Typography variant="h3">Docker extension demo</Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-        This is a basic page rendered with MUI, using Docker's theme. Read the
-        MUI documentation to learn more. Using MUI in a conventional way and
-        avoiding custom styling will help make sure your extension continues to
-        look great as Docker's theme evolves.
-      </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-        Pressing the below button will trigger a request to the backend. Its
-        response will appear in the textarea.
-      </Typography>
-      <Stack direction="row" alignItems="start" spacing={2} sx={{ mt: 4 }}>
-        <Button variant="contained" onClick={fetchAndDisplayResponse}>
-          Call backend
+      <Typography variant="h3">boringproxy client</Typography>
+      <Stack direction="column" alignItems="start" spacing={2} sx={{ mt: 4 }}>
+        
+        <TextField
+          label="boringproxy server address"
+          //sx={{ width: 480 }}
+          variant="outlined"
+          //minRows={5}
+          //value={response ?? ''}
+          onChange={e => setServer(e.target.value)}
+        />
+        
+        <TextField
+          label="boringproxy token"
+          variant="outlined"
+          onChange={e => setToken(e.target.value)}
+        />
+        
+        <Button variant="contained" onClick={run}>
+          Start boringproxy
         </Button>
 
-        <TextField
-          label="Backend response"
-          sx={{ width: 480 }}
-          disabled
-          multiline
-          variant="outlined"
-          minRows={5}
-          value={response ?? ''}
-        />
       </Stack>
     </>
   );

@@ -1,4 +1,8 @@
 FROM golang:1.19-alpine AS builder
+
+RUN apk add --no-cache curl
+RUN curl -fLo /boringproxy https://files.apitman.com/public/boringproxy/master/boringproxy-linux-x86_64 && chmod +x /boringproxy
+
 ENV CGO_ENABLED=0
 WORKDIR /backend
 COPY vm/go.* .
@@ -35,6 +39,7 @@ LABEL org.opencontainers.image.title="boringproxy" \
     com.docker.extension.changelog=""
 
 COPY --from=builder /backend/bin/service /
+COPY --from=builder /boringproxy /
 COPY docker-compose.yaml .
 COPY metadata.json .
 COPY boringproxy_logo.svg .
